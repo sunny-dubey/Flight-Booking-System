@@ -22,6 +22,7 @@ const passengerSchema = mongoose.Schema({
     required: ['true', 'Please mention the seat class'],
     enum: ['First', 'Business', 'Economy'],
   },
+  farePrice: Number,
 });
 
 const Passenger = mongoose.model('Passenger', passengerSchema);

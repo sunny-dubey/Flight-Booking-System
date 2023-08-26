@@ -36,3 +36,36 @@ exports.selectSeat = catchAsync(async (req, res, next) => {
       'Congrats! you have successfully booked your seat succesfully booked',
   });
 });
+
+exports.upgradeSeat = catchAsync(async (req, res, next) => {
+  const { passengerId, newSeatId } = req.body;
+  if (!passengerId || !newSeatId) {
+    return next(new AppError('Please enter the passenger ID and newSeatID'));
+  }
+
+  const passenger = await Passenger.findById(passengerId);
+  if (!passenger) {
+    return next(new AppError('Passenger is not found', 404));
+  }
+  const newSeat = await Seat.findById(newSeatId);
+  if (!newSeat) {
+    return next(new AppError('New Seat not found', 404));
+  }
+  if (newSeat.isOccupied) {
+    return next(new AppError('New Seat is already occupied', 400));
+  }
+  if (newSeat.seatClass === 'Economy') {
+    return next(new AppError('Passenger cannot upgrade to Economy class', 400));
+  }
+
+  const currentSeat = await Seat.findById(passenger.seat);
+  currentSeat.isOccupied = false;
+  await currentSeat.save();
+  passenger.seat = newSeatId;
+  await passenger.save();
+  newSeat.isOccupied = true;
+  await newSeat.save();
+  res.status(200).json({
+    message: 'seat upgraded succesfully',
+  });
+});

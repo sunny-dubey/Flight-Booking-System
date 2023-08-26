@@ -23,7 +23,6 @@ exports.allocatePNRwithClass = catchAsync(async (req, res, next) => {
 
 exports.getPassengerById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   if (!id) {
     return next(new AppError('Please enter Id as params', 404));
   }
@@ -32,7 +31,6 @@ exports.getPassengerById = catchAsync(async (req, res, next) => {
     'flight',
     'seat',
   ]);
-  console.log(passenger);
   if (!passenger) {
     return next(new AppError('Passenger not found', 404));
   }

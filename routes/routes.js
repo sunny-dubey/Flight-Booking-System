@@ -15,5 +15,6 @@ router.post('/allocatePNRwithClass', Passenger.allocatePNRwithClass);
 router.get('/getPassengerById/:id', Passenger.getPassengerById);
 
 router.post('/selectSeat', Seat.selectSeat);
+router.post('/upgradeSeat', Seat.upgradeSeat);
 
 module.exports = router;

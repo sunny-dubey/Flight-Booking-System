@@ -5,16 +5,24 @@ const passengerSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please enter your name'],
   },
-  pnr: String,
+  // pnr: {
+  //   type: String,
+  //   required: [true, 'Please enter the flight PNR'],
+  // },
   flight: {
     type: mongoose.Schema.ObjectId,
     ref: 'Flight',
     required: true,
   },
-  seat: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Seat',
-    required: true,
+  // seat: {
+  //   type: mongoose.Schema.ObjectId,
+  //   ref: 'Seat',
+  //   required: true,
+  // },
+  seatClass: {
+    type: String,
+    required: ['true', 'Please mention the seat class'],
+    enum: ['First', 'Business', 'Economy'],
   },
 });
 

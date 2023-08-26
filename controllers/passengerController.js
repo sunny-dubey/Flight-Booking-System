@@ -28,7 +28,10 @@ exports.getPassengerById = catchAsync(async (req, res, next) => {
     return next(new AppError('Please enter Id as params', 404));
   }
 
-  const passenger = await Passenger.find({ _id: id }).populate('flight');
+  const passenger = await Passenger.find({ _id: id }).populate([
+    'flight',
+    'seat',
+  ]);
   console.log(passenger);
   if (!passenger) {
     return next(new AppError('Passenger not found', 404));

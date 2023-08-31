@@ -4,12 +4,12 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.selectSeat = catchAsync(async (req, res, next) => {
-  const { pnr, seatId } = req.body;
-  if (!pnr || !seatId) {
+  const { passengerId, seatId } = req.body;
+  if (!passengerId || !seatId) {
     return next(new AppError('Please enter Passenger ID and seat Id', 404));
   }
 
-  const passenger = await Passenger.find({ pnrSeatClass: pnr });
+  const passenger = await Passenger.findById(passengerId);
   if (!passenger) {
     return next(new AppError('Passenger not found', 404));
   }

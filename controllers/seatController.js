@@ -47,6 +47,8 @@ exports.upgradeSeat = catchAsync(async (req, res, next) => {
   if (!passenger) {
     return next(new AppError('Passenger is not found', 404));
   }
+  let upgradePrice = 0;
+  let old_seatClass = passenger.seatClass;
   const newSeat = await Seat.findById(newSeatId);
   if (!newSeat) {
     return next(new AppError('New Seat not found', 404));
@@ -57,15 +59,26 @@ exports.upgradeSeat = catchAsync(async (req, res, next) => {
   if (newSeat.seatClass === 'Economy') {
     return next(new AppError('Passenger cannot upgrade to Economy class', 400));
   }
+  if (old_seatClass == 'Economy' && newSeat.seatClass === 'Business') {
+    upgradePrice = 1000;
+  }
+  if (old_seatClass == 'Economy' && newSeat.seatClass === 'First') {
+    upgradePrice = 2000;
+  }
+  if (old_seatClass == 'Business' && newSeat.seatClass === 'First') {
+    upgradePrice = 1000;
+  }
 
   const currentSeat = await Seat.findById(passenger.seat);
   currentSeat.isOccupied = false;
   await currentSeat.save();
   passenger.seat = newSeatId;
+  passenger.seatClass = newSeat.seatClass;
+  passenger.farePrice += upgradePrice;
   await passenger.save();
   newSeat.isOccupied = true;
   await newSeat.save();
   res.status(200).json({
-    message: 'seat upgraded succesfully',
+    message: `seat upgraded succesfully with upgradePrice ${upgradePrice}`,
   });
 });

@@ -4,12 +4,12 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.selectSeat = catchAsync(async (req, res, next) => {
-  const { passengerId, seatId } = req.body;
-  if (!passengerId || !seatId) {
+  const { pnr, seatId } = req.body;
+  if (!pnr || !seatId) {
     return next(new AppError('Please enter Passenger ID and seat Id', 404));
   }
 
-  const passenger = await Passenger.findById(passengerId);
+  const passenger = await Passenger.find({ pnrSeatClass: pnr });
   if (!passenger) {
     return next(new AppError('Passenger not found', 404));
   }
@@ -74,6 +74,7 @@ exports.upgradeSeat = catchAsync(async (req, res, next) => {
   await currentSeat.save();
   passenger.seat = newSeatId;
   passenger.seatClass = newSeat.seatClass;
+  passenger.pnr = newSeat.pnr;
   passenger.farePrice += upgradePrice;
   await passenger.save();
   newSeat.isOccupied = true;
